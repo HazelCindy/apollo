@@ -1,13 +1,20 @@
 const { createLogger, format } = require("winston");
+const winston = require("winston");
 const DailyLog = require("winston-daily-rotate-file");
 const _ = require("lodash");
 const config = require("dotenv");
+const AWS = require("aws-sdk");
+const WinstonCloudWatch = require("winston-cloudwatch");
 const getTimeStamp = require("./getTimestamp");
 
 const { combine, timestamp, label, printf } = format;
 
 config.config();
 const configValues = process.env;
+
+AWS.config.update({
+  region: configValues.AWS_REGION,
+});
 
 const logStringBuilder = (meta, message, level) => {
   let logString = `${getTimeStamp()}|message=${message}|level=${level}`;
@@ -31,7 +38,6 @@ const logStringBuilder = (meta, message, level) => {
     logString = `${logString}|technicalMessage=${meta.technicalMessage}`;
     delete meta.technicalMessage;
   }
-
   // Add customer error
   const selectableErrors = [
     "customerMessage",
@@ -51,7 +57,7 @@ const logStringBuilder = (meta, message, level) => {
   };
   pipeSpecial(meta);
 
-  logString = `${logString}|more=${JSON.stringify(meta)}\n`;
+  logString = `${logString}\n`;
 
   return logString;
 };
@@ -66,21 +72,56 @@ const logFormat = printf(
 );
 
 const logFilePath = configValues.LOGGING_PATH;
-
-const logger = createLogger({
-  transports: [
-    new DailyLog({
-      filename: logFilePath,
-      datePattern: "YYYY-MM-DD",
-    }),
-  ],
-  format: combine(
-    label({ label: "Drift Node Server" }),
-    timestamp({
-      format: timezoned,
-    }),
-    logFormat
-  ),
-});
+let logger;
+if (configValues.ENVIRONMENT === "fileBased") {
+  logger = createLogger({
+    transports: [
+      new DailyLog({
+        filename: logFilePath,
+        datePattern: "YYYY-MM-DD",
+      }),
+    ],
+    format: combine(
+      label({ label: "Drift Node Server" }),
+      timestamp({
+        format: timezoned,
+      }),
+      logFormat
+    ),
+  });
+}
+if (configValues.ENVIRONMENT === "aws") {
+  logger = createLogger({
+    format: winston.format.json(),
+    transports: [
+      new winston.transports.Console({
+        timestamp: true,
+        colorize: true,
+      }),
+      new WinstonCloudWatch({
+        cloudWatchLogs: new AWS.CloudWatchLogs(),
+        logGroupName: "identity",
+        logStreamName: "identity-dev",
+        awsAccessKeyId: configValues.AWS_ACCESS_KEY_ID,
+        awsSecretKey: configValues.AWS_SECRET_KEY_ID,
+        awsRegion: configValues.AWS_REGION,
+        jsonMessage: true,
+        messageFormatter: ({ level, message, ...meta }) =>
+          `[${level}] : ${message} \nAdditional Info: ${JSON.stringify(meta)}}`,
+      }),
+    ],
+  });
+  winston.add(logger);
+  winston.debug("Hey Man, I am here!");
+  // console.log("testing", logger);
+  logger.log("error", "Error: ", {
+    fullError: "test",
+    customError: "test",
+    systemError: "",
+    actualError: "test",
+    customerMessage:
+      "Sorry we are experiencing a technical problem. Please try again later.",
+  });
+}
 
 module.exports = logger;

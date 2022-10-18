@@ -20,6 +20,7 @@ class Countries extends RESTDataSource {
     }
     const response = await this.get(path, {}, { timeout: this.timeout });
     const serializedResponse = convertKeys(response);
+    console.log(serializedResponse);
     return serializedResponse &&
       Array.isArray(serializedResponse) &&
       serializedResponse.length > 0
