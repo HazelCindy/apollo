@@ -1,10 +1,12 @@
-FROM node:12.21-stretch-slim
+FROM node:16-alpine
 
 WORKDIR /app
 
 COPY package.json ./
 
-RUN npm install
+COPY ./yarn.lock ./
+
+RUN yarn
 
 COPY . .
 
