@@ -1,5 +1,4 @@
 const { createLogger, format } = require("winston");
-const winston = require("winston");
 const DailyLog = require("winston-daily-rotate-file");
 const _ = require("lodash");
 const config = require("dotenv");
@@ -92,35 +91,18 @@ if (configValues.ENVIRONMENT === "fileBased") {
 }
 if (configValues.ENVIRONMENT === "aws") {
   logger = createLogger({
-    format: winston.format.json(),
     transports: [
-      new winston.transports.Console({
-        timestamp: true,
-        colorize: true,
-      }),
       new WinstonCloudWatch({
-        cloudWatchLogs: new AWS.CloudWatchLogs(),
         logGroupName: "identity",
         logStreamName: "identity-dev",
         awsAccessKeyId: configValues.AWS_ACCESS_KEY_ID,
-        awsSecretKey: configValues.AWS_SECRET_KEY_ID,
+        awsSecretKey: configValues.AWS_SECRET_ACCESS_KEY,
         awsRegion: configValues.AWS_REGION,
         jsonMessage: true,
         messageFormatter: ({ level, message, ...meta }) =>
           `[${level}] : ${message} \nAdditional Info: ${JSON.stringify(meta)}}`,
       }),
     ],
-  });
-  winston.add(logger);
-  winston.debug("Hey Man, I am here!");
-  // console.log("testing", logger);
-  logger.log("error", "Error: ", {
-    fullError: "test",
-    customError: "test",
-    systemError: "",
-    actualError: "test",
-    customerMessage:
-      "Sorry we are experiencing a technical problem. Please try again later.",
   });
 }
 

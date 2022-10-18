@@ -18,7 +18,6 @@ const typeDefs = gql`
 
   type Countries {
     country: String
-    region: String
   }
 
   type Name {
