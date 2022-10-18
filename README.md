@@ -5,6 +5,8 @@ This is an [Apollo Server](https://www.apollographql.com/docs/apollo-server/) pr
 To start the project, create an .env file then copy paste the values in env.example.
 After that, install the npm packages and start the project
 
+For the aws access creds, you can use the bot credentials assigned to your team
+
 ```bash
 npm i
 # or
