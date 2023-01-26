@@ -93,8 +93,8 @@ if (configValues.ENVIRONMENT === "aws") {
   logger = createLogger({
     transports: [
       new WinstonCloudWatch({
-        logGroupName: "identity",
-        logStreamName: "identity-dev",
+        logGroupName: configValues.LOG_GROUP_NAME,
+        logStreamName: `${configValues.LOG_GROUP_NAME}-${configValues.NODE_ENV}`,
         awsAccessKeyId: configValues.AWS_ACCESS_KEY_ID,
         awsSecretKey: configValues.AWS_SECRET_ACCESS_KEY,
         awsRegion: configValues.AWS_REGION,
