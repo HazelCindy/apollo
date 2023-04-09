@@ -5,7 +5,6 @@ const { ApolloServer } = require("apollo-server-koa");
 const http = require("http");
 const session = require("koa-session");
 const helmet = require("koa-helmet");
-const cors = require("@koa/cors");
 const logger = require("koa-logger");
 const { userAgent } = require("koa-useragent");
 const requestIp = require("request-ip");
