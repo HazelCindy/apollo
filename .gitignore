@@ -8,7 +8,6 @@ yarn-error.log
 safNeo.log
 *.log
 logs/
-yarn.lock
 coverage/
 .scannerwork/
 .vscode
