@@ -79,15 +79,6 @@ async function startApolloServer(typeDefsParam, resolversParam) {
     return requestOrigin;
   };
 
-  const corsConfig = {
-    cors: {
-      origin: checkOriginAgainstWhitelist,
-      credentials: true,
-    },
-  };
-
-  app.use(cors(corsConfig.cors));
-
   app.use(userAgent);
 
   app.use(
@@ -134,7 +125,13 @@ async function startApolloServer(typeDefsParam, resolversParam) {
     ctx.body = err.message;
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: checkOriginAgainstWhitelist,
+      credentials: true,
+    },
+  });
 
   httpServer.on("request", app.callback());
   await new Promise((resolve) =>
