@@ -5,7 +5,6 @@ const { ApolloServer } = require("apollo-server-koa");
 const http = require("http");
 const session = require("koa-session");
 const helmet = require("koa-helmet");
-const cors = require("@koa/cors");
 const logger = require("koa-logger");
 const { userAgent } = require("koa-useragent");
 const requestIp = require("request-ip");
@@ -79,15 +78,6 @@ async function startApolloServer(typeDefsParam, resolversParam) {
     return requestOrigin;
   };
 
-  const corsConfig = {
-    cors: {
-      origin: checkOriginAgainstWhitelist,
-      credentials: true,
-    },
-  };
-
-  app.use(cors(corsConfig.cors));
-
   app.use(userAgent);
 
   app.use(
@@ -134,7 +124,13 @@ async function startApolloServer(typeDefsParam, resolversParam) {
     ctx.body = err.message;
   });
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    cors: {
+      origin: checkOriginAgainstWhitelist,
+      credentials: true,
+    },
+  });
 
   httpServer.on("request", app.callback());
   await new Promise((resolve) =>

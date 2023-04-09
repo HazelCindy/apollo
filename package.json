@@ -1,6 +1,6 @@
 {
   "name": "apollo-koa-boilerplate",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.190.0",
-    "@koa/cors": "4.0.0",
     "apollo-datasource-rest": "3.7.0",
     "apollo-server-core": "^3.10.3",
     "apollo-server-koa": "3.10.3",
