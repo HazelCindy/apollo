@@ -21,8 +21,8 @@ const configurations =
     ? require("../configs/production.json")
     : require("../configs/development.json");
 
-const CountriesAPI = require("./datasources/Countries");
-const NameAPI = require("./datasources/Name");
+const ColumnsAPI = require("./datasources/Columns");
+const TasksAPI = require("./datasources/Tasks");
 
 async function startApolloServer(typeDefsParam, resolversParam) {
   const httpServer = http.createServer();
@@ -39,8 +39,8 @@ async function startApolloServer(typeDefsParam, resolversParam) {
       };
     },
     dataSources: () => ({
-      country: new CountriesAPI(),
-      name: new NameAPI(),
+      columns: new ColumnsAPI(),
+      tasks: new TasksAPI(),
     }),
     formatError: (err) => {
       err.extensions.exception = "";
