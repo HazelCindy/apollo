@@ -22,11 +22,24 @@ module.exports = {
     africa: "africa",
   },
   Query: {
-    getCountries: (_, args, { dataSources }) =>
-      dataSources.country.getCountries(args),
-    getName: (_, __, { dataSources }) => dataSources.name.getName(),
+    getColumns: (_, __, { dataSources }) => dataSources.columns.getColumns(),
+    getTasks: (_, args, { dataSources }) => dataSources.tasks.getTasks(args),
   },
   Mutation: {
-    writeName: (_, args, { dataSources }) => dataSources.name.writeName(args),
+    // Column mutations
+    addColumn: (_, args, { dataSources }) =>
+      dataSources.columns.addColumn(args),
+    updateColumn: (_, args, { dataSources }) =>
+      dataSources.columns.updateColumn(args),
+    deleteColumn: (_, args, { dataSources }) =>
+      dataSources.columns.deleteColumn(args),
+    // Tasks Mutations
+    addTask: (_, args, { dataSources }) => dataSources.tasks.addTask(args),
+    updateTask: (_, args, { dataSources }) =>
+      dataSources.tasks.updateTask(args),
+    deleteTask: (_, args, { dataSources }) =>
+      dataSources.tasks.deleteTask(args),
+    clearColumnTasks: (_, args, { dataSources }) =>
+      dataSources.tasks.clearColumnTasks(args),
   },
 };

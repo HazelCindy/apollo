@@ -8,20 +8,40 @@ const typeDefs = gql`
   }
 
   type Query {
-    getCountries(param: String): [Countries]
-    getName: Name
+    "get all the Columns"
+    getColumns: [Column]
+    "get all tasks"
+    getTasks(columnId: String): [Task]
   }
 
   type Mutation {
-    writeName(name: String!): Boolean!
+    "Mutation to add a column to Board"
+    addColumn(title: String): Column
+    "Mutation to add a task to a column"
+    addTask(description: String, columnId: String!): Task
+    "Update Column"
+    updateColumn(id: ID!, title: String): Column
+    "Update Task"
+    updateTask(id: ID!, description: String, columnId: String): Task
+    "Delete Column"
+    deleteColumn(id: ID!): Boolean
+    "Delete Task"
+    deleteTask(id: ID!): Boolean
+    "Clear column"
+    clearColumnTasks(columnId: String!): Boolean
   }
 
-  type Countries {
-    country: String
+  "Type for a task on the Column"
+  type Task {
+    id: ID!
+    description: String!
+    columnId: String!
   }
 
-  type Name {
-    name: String!
+  "Column that is displayed on the column"
+  type Column {
+    id: ID!
+    title: String
   }
 `;
 
