@@ -12,8 +12,11 @@ class Column extends RESTDataSource {
 
   async addColumn(args) {
     const { title: paramName } = args;
+    const idExists = Columns.some(
+      (column) => column.id === String(Columns.length + 1)
+    );
     const newColumn = {
-      id: String(Columns.length + 1),
+      id: idExists ? String(Columns.length + 2) : String(Columns.length + 1),
       title: paramName,
     };
     Columns.push(newColumn);

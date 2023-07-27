@@ -17,9 +17,10 @@ class Task extends RESTDataSource {
 
   async addTask(args) {
     const { description, columnId } = args;
+    const idExists = Tasks.some((task) => task.id === String(Tasks.length + 1));
     // addTask to column
     const newTask = {
-      id: String(Tasks.length + 1),
+      id: idExists ? String(Tasks.length + 2) : String(Tasks.length + 1),
       description,
       columnId,
     };
@@ -56,6 +57,7 @@ class Task extends RESTDataSource {
 
   async clearColumnTasks(args) {
     const { columnId } = args;
+
     // Get the index of column to be cleared
     if (columnId !== "") {
       Tasks = Tasks.filter(({ columnId }) => columnId !== columnId);
